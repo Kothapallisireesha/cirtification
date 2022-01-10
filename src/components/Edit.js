@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react'
 import { Button, Form, Modal } from 'react-bootstrap';
-
+import * as yup from 'yup';
 
 function Edit({showEditModal,hideShowEditModal,updateCertificateAfterEdit,selectedCertificate}) {
     const [certificate, setCertificate] = useState({
@@ -8,65 +8,120 @@ function Edit({showEditModal,hideShowEditModal,updateCertificateAfterEdit,select
         certifiedBy: '',
         yearOfCompletion: ''
     });
-    const [errors, setErrors] = useState({
-        NameError: '',
-        CertifiedByError: '',
-        YOCError: '',
+ //   const [errors, setErrors] = useState({
+   //     NameError: '',
+     //   CertifiedByError: '',
+       // YOCError: '',
+    //})
+    let validationSchema = yup.object().shape({
+        
     })
-
-    const validateName = useCallback(
-        () => {
-            if (certificate.certificateName) {
-                if (certificate.certificateName.length < 5) {
-                    setErrors({
-                        ...errors,
-                        NameError: ' minimum of 5 characters is required'
-                    })
-                }
-                else{return true}
-                
+    const [nameError, setnameError] = useState("")
+    const validateName = () => {
+        if (certificate.certificateName) {
+            let regex = /^[a-zA-Z ]{4,30}$/;
+            if (regex.test(certificate.certificateName)) {
+                setnameError("");
+                return true;
             }
             else {
-                setErrors({
-                    NameError: 'Required'
-                })
-                return false;
+                setnameError("Enter valid Name");
             }
-        },
-        [certificate.certificateName],
-    )
+        }
+        else {
+            setnameError("Name is Required");
+        }
+        return false;
+    };
+    const [certifiedError, setcertifiedError] = useState("")
     const validateCertifiedBy = () => {
         if (certificate.certifiedBy) {
-            if (certificate.certifiedBy.length < 5) {
-                setErrors({
-                    CertifiedByError: 'minimum of 5 characters is required'
-                })
+            let regex = /^[a-zA-Z ]{4,30}$/;
+            if (regex.test(certificate.certifiedBy)) {
+                setcertifiedError("");
+                return true;
             }
-            else{return true}
+            else {
+                setcertifiedError("enter valid Certfied Name");
+            }
         }
         else {
-            setErrors({
-                CertifiedByError: 'Required'
-            })
+            setcertifiedError("Certified Name is Required");
         }
-    }
-    const validateYOC = () => {
+        return false;
+    };
+
+    const [yearError, setyearError] = useState("")
+    const  validateYOC = () => {
         if (certificate.yearOfCompletion) {
-            if (!(certificate.yearOfCompletion > 1950 && certificate.yearOfCompletion < 2022)) {
-                setErrors({
-                    YOCError: ' 1951-2022'
-                })
-                return false;
+            let regex = /^(197\d|19[89]\d|20[01]\d|202[0-2])$/;
+            if (regex.test(certificate.yearOfCompletion)) {
+                setyearError("");
+                return true;
             }
-            else{return true}
+            else {
+                setyearError("Enter Year between 1970 to 2022");
+            }
         }
         else {
-            setErrors({
-                YOCError: 'Required'
-            })
-            return false;
+            setyearError("Year is Required");
         }
+        return false;
+
     }
+   // const validateName = useCallback(
+     //   () => {
+       //     if (certificate.certificateName) {
+         //       if (certificate.certificateName.length < 5) {
+           //         setErrors({
+             //           ...errors,
+               //         NameError: ' minimum of 5 characters is required'
+                 //   })
+                //}
+                //else{return true}
+                
+            //}
+            //else {
+              //  setErrors({
+                //    NameError: 'Required'
+                //})
+                //return false;
+            //}
+        //},
+        //[certificate.certificateName],
+    //)
+    // const validateCertifiedBy = () => {
+    //     if (certificate.certifiedBy) {
+    //         if (certificate.certifiedBy.length < 5) {
+    //             setErrors({
+    //                 CertifiedByError: 'minimum of 5 characters is required'
+    //             })
+    //         }
+    //         else{return true}
+    //     }
+    //     else {
+    //         setErrors({
+    //             CertifiedByError: 'Required'
+    //         })
+    //     }
+    // }
+    // const validateYOC = () => {
+    //     if (certificate.yearOfCompletion) {
+    //         if (!(certificate.yearOfCompletion > 1950 && certificate.yearOfCompletion < 2022)) {
+    //             setErrors({
+    //                 YOCError: ' 1951-2022'
+    //             })
+    //             return false;
+    //         }
+    //         else{return true}
+    //     }
+    //     else {
+    //         setErrors({
+    //             YOCError: 'Required'
+    //         })
+    //         return false;
+    //     }
+    // }
 
     useEffect(() => {
         setCertificate({...selectedCertificate})
@@ -84,11 +139,17 @@ function Edit({showEditModal,hideShowEditModal,updateCertificateAfterEdit,select
     }
 
     let editCertificate=()=>{
+        validateName();
+        validateCertifiedBy();
+        validateYOC();
+        if (validateName() && validateCertifiedBy() && validateYOC()) {
         updateCertificateAfterEdit(certificate)
         setCertificate({
         certificateName: '',
         certifiedBy: '',
         yearOfCompletion: ''})
+    }
+    
     }
 
     return (
@@ -110,7 +171,7 @@ function Edit({showEditModal,hideShowEditModal,updateCertificateAfterEdit,select
                                 value={certificate.certificateName}
                                 onChange={handleChange}
                             />
-                            {errors.NameError && <div className='errMsg'>{errors.NameError}</div>}
+                            {nameError && <div className='errMsg' style={{color:"red"}}>{nameError}</div>}
                         </div>
                         <div>
                             <label>Cirtification From</label>
@@ -122,7 +183,7 @@ function Edit({showEditModal,hideShowEditModal,updateCertificateAfterEdit,select
                                 value={certificate.certifiedBy}
                                 onChange={handleChange}
                             />
-                            {errors.CertifiedByError && <div className='errMsg'>{errors.CertifiedByError}</div>}
+                            {certifiedError && <div className='errMsg'  style={{color:"red"}}>{certifiedError}</div>}
                         </div>
                         <div>
                             <label>YearOfCompletition</label>
@@ -134,7 +195,7 @@ function Edit({showEditModal,hideShowEditModal,updateCertificateAfterEdit,select
                                 value={certificate.yearOfCompletion}
                                 onChange={handleChange}
                             />
-                            {errors.YOCError && <div className='errMsg'>{errors.YOCError}</div>}
+                            {yearError && <div className='errMsg'  style={{color:"red"}}>{yearError}</div>}
                         </div>
                     </Form>
                 </Modal.Body>
@@ -151,4 +212,4 @@ function Edit({showEditModal,hideShowEditModal,updateCertificateAfterEdit,select
     )
 }
 
-export default Edit
+export default  React.memo(Edit)
