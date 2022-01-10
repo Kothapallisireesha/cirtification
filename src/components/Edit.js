@@ -19,13 +19,13 @@ function Edit({showEditModal,hideShowEditModal,updateCertificateAfterEdit,select
     const [nameError, setnameError] = useState("")
     const validateName = () => {
         if (certificate.certificateName) {
-            let regex = /^[a-zA-Z ]{4,30}$/;
+            let regex = /^[a-zA-Z ]{5,30}$/;
             if (regex.test(certificate.certificateName)) {
                 setnameError("");
                 return true;
             }
             else {
-                setnameError("Enter valid Name");
+                setnameError("min of 5 characters needed");
             }
         }
         else {
@@ -36,17 +36,17 @@ function Edit({showEditModal,hideShowEditModal,updateCertificateAfterEdit,select
     const [certifiedError, setcertifiedError] = useState("")
     const validateCertifiedBy = () => {
         if (certificate.certifiedBy) {
-            let regex = /^[a-zA-Z ]{4,30}$/;
+            let regex = /^[a-zA-Z ]{5,30}$/;
             if (regex.test(certificate.certifiedBy)) {
                 setcertifiedError("");
                 return true;
             }
             else {
-                setcertifiedError("enter valid Certfied Name");
+                setcertifiedError("min of 5 characters ");
             }
         }
         else {
-            setcertifiedError("Certified Name is Required");
+            setcertifiedError(" Required");
         }
         return false;
     };
@@ -54,13 +54,14 @@ function Edit({showEditModal,hideShowEditModal,updateCertificateAfterEdit,select
     const [yearError, setyearError] = useState("")
     const  validateYOC = () => {
         if (certificate.yearOfCompletion) {
-            let regex = /^(197\d|19[89]\d|20[01]\d|202[0-2])$/;
+           // let regex=/^(19|20)\d{2}$/;
+            let regex = /^(19\d|19[89]\d|20[01]\d|202[0-2])$/;
             if (regex.test(certificate.yearOfCompletion)) {
                 setyearError("");
                 return true;
             }
             else {
-                setyearError("Enter Year between 1970 to 2022");
+                setyearError("1970-2022");
             }
         }
         else {
@@ -149,7 +150,18 @@ function Edit({showEditModal,hideShowEditModal,updateCertificateAfterEdit,select
         certifiedBy: '',
         yearOfCompletion: ''})
     }
-    
+    // let editCertification = (event) => {
+    //     validateName();
+    //     validateCertified();
+    //     validateYear();
+    //     if (validateName() && validateCertified() && validateYear()) {
+    //         props.showCert1(certAdd)
+    //         console.log('certadd', certAdd);
+    //         props.hideShowEditModal();
+    //     }
+        // else{
+        //     alert("error")
+        // }
     }
 
     return (

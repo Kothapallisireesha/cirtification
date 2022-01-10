@@ -107,34 +107,34 @@ function Add({ showAddModal, hideShowAddModal, updateList }) {
     const [nameError, setnameError] = useState("")
     const validateName = () => {
         if (certificate.certificateName) {
-            let regex = /^[a-zA-Z ]{4,30}$/;
+            let regex = /^[a-zA-Z ]{5,20}$/;
             if (regex.test(certificate.certificateName)) {
                 setnameError("");
                 return true;
             }
             else {
-                setnameError("Enter valid Name");
+                setnameError("min of 5 characters");
             }
         }
         else {
-            setnameError("Name is Required");
+            setnameError("Required");
         }
         return false;
     };
     const [certifiedError, setcertifiedError] = useState("")
     const validateCertifiedBy = () => {
         if (certificate.certifiedBy) {
-            let regex = /^[a-zA-Z ]{4,30}$/;
+            let regex = /^[a-zA-Z ]{5,30}$/;
             if (regex.test(certificate.certifiedBy)) {
                 setcertifiedError("");
                 return true;
             }
             else {
-                setcertifiedError("enter valid Certfied Name");
+                setcertifiedError("minimum of 5 characters");
             }
         }
         else {
-            setcertifiedError("Certified Name is Required");
+            setcertifiedError("Required");
         }
         return false;
     };
